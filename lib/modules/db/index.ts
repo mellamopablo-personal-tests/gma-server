@@ -18,24 +18,27 @@ const db = knex({
 interface User {
 	id: number;
 	name: string;
-	password: HashedPassword;
+	password?: HashedPassword;
 }
 
 const users = {
+	RELEVANT_INFO: ["id", "username", "password"],
+
 	/**
-	 * Gets an user from the database
+	 * Gets an users from the database
 	 *
 	 * @param id
 	 * @returns {Promise<User|null>|Promise} Returns the User object or null if it doesn't exist.
 	 */
 	getById: function (id: number): Promise<User|null> {
 		return new Promise((fulfill, reject) => {
-			db("users").select(["username", "password"]).where({
+			db("users").select(this.RELEVANT_INFO).where({
 				id: id
 			}).then(rows => {
 				fulfill(
 					rows[0]
 						? {
+							id: rows[0].id,
 							name: rows[0].username,
 							password: rows[0].password
 						}
@@ -53,7 +56,7 @@ const users = {
 	 */
 	getByUsername: function (username: string): Promise<User|null> {
 		return new Promise((fulfill, reject) => {
-			db("users").select(["id", "username", "password"]).where({
+			db("users").select(this.RELEVANT_INFO).where({
 				username: username
 			}).then(rows => {
 				fulfill(
@@ -65,6 +68,25 @@ const users = {
 						}
 						: null
 				);
+			}).catch(reject);
+		});
+	},
+
+	getAll: function(): Promise<User[]> {
+		return new Promise((fulfill, reject) => {
+			db("users").select(this.RELEVANT_INFO).then(rows => {
+				if (rows.length === 0) {
+					fulfill([]);
+				} else {
+					let result = [];
+					for (let i = 0; i < rows.length; i++) {
+						result.push({
+							id: rows[i].id,
+							name: rows[i].username
+						});
+					}
+					fulfill(result);
+				}
 			}).catch(reject);
 		});
 	},
@@ -81,14 +103,62 @@ const users = {
 	}
 };
 
+interface Message {
+	id: number
+	from: number
+	to: number
+	content: string
+}
+
+interface MessageQueryOptions {
+	from?: User
+	to?: User
+}
+
+const messages = {
+	add: function(to: User, from: User, content: string): Promise<{}> {
+		return new Promise((fulfill, reject) => {
+			db("messages").insert({
+				to: to.id,
+				from: from.id,
+				content: content
+			}).then(fulfill).catch(reject);
+		});
+	},
+
+	get: function(options: MessageQueryOptions): Promise<Message[]> {
+		return new Promise((fulfill, reject) => {
+			db("messages").select().where(options).then(messages => {
+				if (messages.length === 0) {
+					fulfill([]);
+				} else {
+					let result: Message[] = [];
+
+					for (let i = 0; i < messages.length; i++) {
+						result.push({
+							id: messages[i].id,
+							from: messages[i].from,
+							to: messages[i].to,
+							content: messages[i].content
+						});
+					}
+
+					fulfill(result);
+				}
+			}).catch(reject);
+		});
+	}
+};
+
 const sessions = {
 	/**
 	 * Creates a new session token and stores it to the database.
 	 *
 	 * @param user
+	 * @param ip The user's remote address
 	 * @returns {Promise<string>|Promise} Returns the token on success.
 	 */
-	add: function(user: User) {
+	add: function(user: User, ip: string): Promise<string> {
 		return new Promise((fulfill, reject) => {
 			let token = crypto.randomBytes(20).toString("hex");
 			let timestamp = Math.floor(Date.now() / 1000);
@@ -96,12 +166,25 @@ const sessions = {
 			db("sessions").insert({
 				token: token,
 				time: timestamp,
-				userid: user.id
+				userid: user.id,
+				ip: ip
 			}).then(() => {
 				fulfill(token);
+			}).catch(reject);
+		});
+	},
+
+	validate: function(token: string, ip: string): Promise<number|null> {
+		return new Promise((fulfill, reject) => {
+			db("sessions").select(["userid", "time"]).where({
+				token: token,
+				ip: ip
+			}).then(rows => {
+				// TODO add session length
+				fulfill(rows.length > 0 ? rows[0].userid : null);
 			}).catch(reject);
 		});
 	}
 };
 
-export { users, sessions };
+export { users, messages, sessions };

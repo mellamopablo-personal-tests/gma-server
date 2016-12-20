@@ -96,8 +96,8 @@ namespace app {
          * a call to next inside the callback will call the callback for the next declared parameter.
          * For the last parameter, a call to next will call the next middleware in place for the route currently
          * being processed, just like it would if name were just a string.
-         * For example, when :user is present in a route path, you may map user loading logic to automatically
-         * provide req.user to the route, or perform validations on the parameter input.
+         * For example, when :users is present in a route path, you may map users loading logic to automatically
+         * provide req.users to the route, or perform validations on the parameter input.
          */
         param(name: string | string[], handler: ParamHandler): this;
 
@@ -536,6 +536,11 @@ namespace req {
          *      // => false
          */
         is(type: string | string[]): boolean;
+
+        // CUSTOM
+		body;
+		authenticated: boolean;
+		userId?: number;
     }
 }
 
@@ -668,11 +673,11 @@ namespace res {
          *  dynamic situations. The code backing `res.sendFile()` is actually
          *  the same code, so HTTP cache support etc is identical.
          *
-         *     app.get('/user/:uid/photos/:file', function(req, res){
+         *     app.get('/users/:uid/photos/:file', function(req, res){
          *       var uid = req.params.uid
          *         , file = req.params.file;
          *
-         *       req.user.mayViewFilesFrom(uid, function(yes){
+         *       req.users.mayViewFilesFrom(uid, function(yes){
          *         if (yes) {
          *           res.sendFile('/uploads/' + uid + '/' + file);
          *         } else {
@@ -970,23 +975,23 @@ namespace createRouter {
          *
          * Parameter mapping is used to provide pre-conditions to routes
          * which use normalized placeholders. For example a _:user_id_ parameter
-         * could automatically load a user's information from the database without
+         * could automatically load a users's information from the database without
          * any additional code,
          *
          * The callback uses the samesignature as middleware, the only differencing
          * being that the value of the placeholder is passed, in this case the _id_
-         * of the user. Once the `next()` function is invoked, just like middleware
+         * of the users. Once the `next()` function is invoked, just like middleware
          * it will continue on to execute the route, or subsequent parameter functions.
          *
          *      app.param('user_id', function(req, res, next, id){
-         *        User.find(id, function(err, user){
+         *        User.find(id, function(err, users){
          *          if (err) {
          *            next(err);
-         *          } else if (user) {
-         *            req.user = user;
+         *          } else if (users) {
+         *            req.users = users;
          *            next();
          *          } else {
-         *            next(new Error('failed to load user'));
+         *            next(new Error('failed to load users'));
          *          }
          *        });
          *      });

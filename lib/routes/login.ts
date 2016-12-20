@@ -1,18 +1,27 @@
 /// <reference path="../../typings/index.d.ts" />
 import * as express from "express";
 
-import { users, sessions } from "../modules/db";
+import { users, sessions } from "../modules/db/index";
 import { verifyPassword } from "../modules/crypto/hash";
 
 let router = express.Router();
 
 /**
- * @api {post} /login Log in and get a session token
+ * @api {post} /login Retrieves a session token
+ *
  * @apiName Login
  * @apiGroup Login
+ * @apiDescription
+ * The login method is used to retrieve a session token by sending the user credentials. The
+ * session token is then sent as a header in subsequent requests that require authentication.
+ * The session token lasts for the amount of time defined in the configuration file, and the
+ * duration is refreshed on each authenticated request.
  *
- * @apiParam {String} username The user's username.
- * @apiParam {String} password The user's password.
+ * Your application should be ready to handle a 401 Unauthorized request, result of the session
+ * token expiring, at any time. If that happens, use this method again.
+ *
+ * @apiParam {String} username The users's username.
+ * @apiParam {String} password The users's password.
  *
  * @apiSuccess (200) {String} token
  * The token to be used to authenticate on the rest of the api methods.
@@ -23,7 +32,7 @@ let router = express.Router();
  * 	}
  *
  * @apiError (401) WRONG_USERNAME_OR_PASSWORD
- * Either the username doesn't exist or the password for the specified user is incorrect.
+ * Either the username doesn't exist or the password for the specified users is incorrect.
  * @apiErrorExample
  * 	HTTP 401 Unauthorized
  * 	{
@@ -35,7 +44,7 @@ router.post("/", (req, res) => {
 	if (req.body.username && req.body.password) {
 		users.getByUsername(req.body.username).then(user => {
 			if (user !== null && verifyPassword(req.body.password, user.password)) {
-				sessions.add(user).then(token => {
+				sessions.add(user, req.connection.remoteAddress).then(token => {
 					res.status(200).send(JSON.stringify({
 						token: token
 						// TODO maybe add valid until

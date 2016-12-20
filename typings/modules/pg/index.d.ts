@@ -120,7 +120,8 @@ export = Pool;
 // Source: https://raw.githubusercontent.com/types/npm-pg/61ff236613a34ac9a2645649b5fff121a20556f1/index.d.ts
 declare module 'pg' {
 import { EventEmitter } from 'events';
-import { ConnectOptions } from 'tls';
+//import { ConnectOptions } from 'tls'; causes error TS2305: Module '"tls"' has no exported
+//                                             member 'ConnectOptions'.
 import Pool = require('~pg~pg-pool');
 
 export type ClientConstructor = new (connection: string | Config) => Client;
@@ -152,7 +153,7 @@ export interface Config {
   reapIntervalMillis?: number;
   poolLog?: boolean;
   client_encoding?: string;
-  ssl?: boolean | ConnectOptions;
+  //ssl?: boolean | ConnectOptions; causes error TS2304: Cannot find name 'ConnectOptions'.
   application_name?: string;
   fallback_application_name?: string;
   parseInputDatesAsUTC?: boolean;

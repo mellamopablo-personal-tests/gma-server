@@ -2580,7 +2580,7 @@ declare module "fs" {
         export const S_IXOTH: number;
     }
 
-    /** Tests a user's permissions for the file specified by path. */
+    /** Tests a users's permissions for the file specified by path. */
     export function access(path: string | Buffer, callback: (err: NodeJS.ErrnoException) => void): void;
     export function access(path: string | Buffer, mode: number, callback: (err: NodeJS.ErrnoException) => void): void;
     /** Synchronous version of fs.access. This throws if any accessibility checks fail, and does nothing otherwise. */
@@ -2617,7 +2617,7 @@ declare module "path" {
          */
         root: string;
         /**
-         * The full directory path such as '/home/user/dir' or 'c:\path\dir'
+         * The full directory path such as '/home/users/dir' or 'c:\path\dir'
          */
         dir: string;
         /**

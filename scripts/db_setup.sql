@@ -6,7 +6,16 @@ CREATE TABLE public.users (
 
 CREATE TABLE sessions (
     token TEXT PRIMARY KEY NOT NULL,
-    time INTEGER NOT NULL,
+    ip TEXT NOT NULL,
     userid INTEGER NOT NULL,
+    time INTEGER NOT NULL,
     CONSTRAINT sessions_users_id_fk FOREIGN KEY (userid) REFERENCES users (id)
+);
+
+CREATE TABLE public.messages
+(
+    id SERIAL PRIMARY KEY,
+    "from" INT NOT NULL,
+    "to" INT NOT NULL,
+    content TEXT
 );

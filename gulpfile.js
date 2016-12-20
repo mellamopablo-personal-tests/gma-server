@@ -9,7 +9,9 @@ const gulp    = require("gulp")
 gulp.task("typescript", () => {
 	return gulp.src("./lib/**/*.ts")
 		.pipe(plumber())
-		.pipe(tsc())
+		.pipe(tsc({
+			allowJs: true
+		}))
 		.pipe(gulp.dest("./server/"))
 });
 

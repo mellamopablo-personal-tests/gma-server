@@ -3,7 +3,7 @@ import * as express from "express";
 import * as bodyParser from "body-parser";
 import * as morgan from "morgan";
 
-import { api } from "./routes/";
+import { api } from "./routes/index";
 import { authenticate } from "./auth";
 
 let app = express();
@@ -12,7 +12,7 @@ let port = +process.env.GMA_PORT || +process.argv[2] || +process.env.PORT || 300
 //noinspection TypeScriptValidateTypes
 app.use(morgan("combined"));
 app.use(bodyParser.urlencoded({ extended: false }));
-//app.use(authenticate);
+app.use(authenticate);
 app.use("/api/v1", api);
 
 // Error handling middleware

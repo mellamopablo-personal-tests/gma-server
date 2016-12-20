@@ -1,20 +1,56 @@
 /// <reference path="../../typings/index.d.ts" />
 import * as express from "express";
 
-import { users as db } from "../modules/db";
+import { users as db } from "../modules/db/index";
 import { createHashedPassowrd } from "../modules/crypto/hash";
 
 let router = express.Router();
 
 /**
- * @api {post} /user Create a new user
+ * @api {get} /users Retrieves a list of all users
+ * @apiName GetUsers
+ * @apiGroup User
+ *
+ * @apiSuccess (200) {User[]} users
+ * An array containing every user. Each user will contain the following properties: id, and name.
+ *
+ * @apiSuccessExample
+ * HTTP 200 OK
+ * {
+ * 	users: [
+ * 		{
+ * 			id: 1,
+ * 			name: "firstUser"
+ * 		}, {
+ * 			id: 2
+ * 			name: "secondUser"
+ * 		}
+ * 	]
+ * }
+ */
+router.get("/", (req, res) => {
+	db.getAll().then(users => {
+		res.status(200).send(JSON.stringify({
+			users: users.map(e => ({
+				id: e.id,
+				name: e.name
+			}))
+		}));
+	}).catch(err => {
+		console.error(err);
+		res.status(500).send("");
+	});
+});
+
+/**
+ * @api {post} /users Create a new user
  * @apiName CreateUser
  * @apiGroup User
  *
- * @apiParam {String} username The user's username, which will be used to authenticate.
- * @apiParam {String} password The user's password, which will be used to authenticate.
+ * @apiParam {String} username The users's username, which will be used to authenticate.
+ * @apiParam {String} password The users's password, which will be used to authenticate.
  *
- * @apiSuccess (201) {number} id The id of the created user.
+ * @apiSuccess (201) {number} id The id of the created users.
  * @apiSuccessExample
  * 	HTTP 201 Created
  * 	{
@@ -26,7 +62,7 @@ let router = express.Router();
  * 	HTTP 422 Unprocessable Entity
  * 	{
  * 		code: "NAME_ALREADY_TAKEN",
- * 		message: 	"The specified username <my_username> is already taken."
+ * 		message: "The specified username <my_username> is already taken."
  * 	}
  */
 router.post("/", (req, res) => {
@@ -58,11 +94,10 @@ router.post("/", (req, res) => {
 		res.status(400).send(JSON.stringify({
 			error: {
 				code: "BAD_REQUEST",
-				message: "Either the username or the password, or both, are missing from the" +
-				" request body."
+				message: "Either the username or the password, or both, are missing."
 			}
 		}));
 	}
 });
 
-export { router as user };
+export { router as users };

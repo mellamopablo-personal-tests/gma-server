@@ -27,7 +27,7 @@ namespace morgan {
      */
     export interface Morgan {
         /***
-         * Create a new morgan logger middleware function using the given format and options. The format argument may be a string of a predefined name (see below for the names), 
+         * Create a new morgan logger middleware function using the given format and options. The format argument may be a string of a predefined name (see below for the names),
          * or a string of a format string containing defined tokens.
          * @param format
          * @param options
@@ -35,14 +35,14 @@ namespace morgan {
         (format: string, options?: Options): express.RequestHandler;
         /***
          * Standard Apache combined log output.
-         * :remote-addr - :remote-user [:date] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"
+         * :remote-addr - :remote-users [:date] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":users-agent"
          * @param format
          * @param options
          */
         (format: 'combined', options?: Options): express.RequestHandler;
         /***
          * Standard Apache common log output.
-         * :remote-addr - :remote-user [:date] ":method :url HTTP/:http-version" :status :res[content-length]
+         * :remote-addr - :remote-users [:date] ":method :url HTTP/:http-version" :status :res[content-length]
          * @param format
          * @param options
          */
@@ -57,7 +57,7 @@ namespace morgan {
 
         /***
          * Shorter than default, also including response time.
-         * :remote-addr :remote-user :method :url HTTP/:http-version :status :res[content-length] - :response-time ms
+         * :remote-addr :remote-users :method :url HTTP/:http-version :status :res[content-length] - :response-time ms
          * @param format
          * @param options
          */
@@ -72,7 +72,7 @@ namespace morgan {
         (format: 'tiny', options?: Options): express.RequestHandler;
 
         /***
-         * Create a new morgan logger middleware function using the given format and options. The format argument may be a  
+         * Create a new morgan logger middleware function using the given format and options. The format argument may be a
          * custom format function which adheres to the signature.
          * @param format
          * @param options
@@ -155,7 +155,7 @@ namespace morgan {
 }
 
 /***
-     * Create a new morgan logger middleware function using the given format and options. The format argument may be a string of a predefined name (see below for the names), 
+     * Create a new morgan logger middleware function using the given format and options. The format argument may be a string of a predefined name (see below for the names),
      * or a string of a format string containing defined tokens.
  * @param format
  * @param options
@@ -164,7 +164,7 @@ function morgan(format: string, options?: morgan.Options): express.RequestHandle
 
 /***
  * Standard Apache combined log output.
- * :remote-addr - :remote-user [:date] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"
+ * :remote-addr - :remote-users [:date] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":users-agent"
  * @param format
  * @param options
  */
@@ -172,7 +172,7 @@ function morgan(format: 'combined', options?: morgan.Options): express.RequestHa
 
 /***
  * Standard Apache common log output.
- * :remote-addr - :remote-user [:date] ":method :url HTTP/:http-version" :status :res[content-length]
+ * :remote-addr - :remote-users [:date] ":method :url HTTP/:http-version" :status :res[content-length]
  * @param format
  * @param options
  */
@@ -188,7 +188,7 @@ function morgan(format: 'dev', options?: morgan.Options): express.RequestHandler
 
 /***
  * Shorter than default, also including response time.
- * :remote-addr :remote-user :method :url HTTP/:http-version :status :res[content-length] - :response-time ms
+ * :remote-addr :remote-users :method :url HTTP/:http-version :status :res[content-length] - :response-time ms
  * @param format
  * @param options
  */
@@ -203,7 +203,7 @@ function morgan(format: 'short', options?: morgan.Options): express.RequestHandl
 function morgan(format: 'tiny', options?: morgan.Options): express.RequestHandler;
 
 /***
- * Create a new morgan logger middleware function using the given format and options. The format argument may be a  
+ * Create a new morgan logger middleware function using the given format and options. The format argument may be a
  * custom format function which adheres to the signature.
  * @param format
  * @param options
