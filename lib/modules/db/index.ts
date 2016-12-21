@@ -21,7 +21,7 @@ interface User {
 	password?: HashedPassword;
 }
 
-const users = {
+export const users = {
 	RELEVANT_INFO: ["id", "username", "password"],
 
 	/**
@@ -115,7 +115,7 @@ interface MessageQueryOptions {
 	to?: User
 }
 
-const messages = {
+export const messages = {
 	add: function(to: User, from: User, content: string): Promise<{}> {
 		return new Promise((fulfill, reject) => {
 			db("messages").insert({
@@ -150,7 +150,7 @@ const messages = {
 	}
 };
 
-const sessions = {
+export const sessions = {
 	/**
 	 * Creates a new session token and stores it to the database.
 	 *
@@ -186,5 +186,3 @@ const sessions = {
 		});
 	}
 };
-
-export { users, messages, sessions };

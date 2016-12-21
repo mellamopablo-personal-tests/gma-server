@@ -24,13 +24,11 @@ let sha512 = function(password: string, salt: string): HashedPassword {
 	}
 };
 
-let createHashedPassowrd = function(password: string): HashedPassword {
+export function createHashedPassowrd(password: string): HashedPassword {
 	return sha512(password, genSalt(16));
-};
+}
 
-let verifyPassword = function(plainTextPassword: string, hashedPassword: HashedPassword): boolean {
+export function verifyPassword(plainTextPassword: string, hashedPassword: HashedPassword): boolean {
 	let newHash = sha512(plainTextPassword, hashedPassword.salt);
 	return newHash.hash === hashedPassword.hash;
-};
-
-export { createHashedPassowrd, verifyPassword };
+}
