@@ -7,10 +7,10 @@ import { verifyPassword } from "../modules/crypto/hash";
 let router = express.Router();
 
 /**
- * @api {post} /login Retrieves a session token
+ * @api {post} /auth/login Retrieve a session token
  *
  * @apiName Login
- * @apiGroup Login
+ * @apiGroup Auth
  * @apiDescription
  * The login method is used to retrieve a session token by sending the user credentials. The
  * session token is then sent as a header in subsequent requests that require authentication.
@@ -40,7 +40,7 @@ let router = express.Router();
  * 		message: "The entered username or password are incorrect."
  * 	}
  */
-router.post("/", (req, res) => {
+router.post("/login", (req, res) => {
 	if (req.body.username && req.body.password) {
 		users.getByUsername(req.body.username).then(user => {
 			if (user !== null && verifyPassword(req.body.password, user.password)) {
@@ -76,4 +76,4 @@ router.post("/", (req, res) => {
 	}
 });
 
-export { router as login };
+export { router as auth };

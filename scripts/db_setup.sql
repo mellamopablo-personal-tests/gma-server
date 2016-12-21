@@ -4,7 +4,7 @@ CREATE TABLE public.users (
     password JSON NOT NULL
 );
 
-CREATE TABLE sessions (
+CREATE TABLE public.sessions (
     token TEXT PRIMARY KEY NOT NULL,
     ip TEXT NOT NULL,
     userid INTEGER NOT NULL,

@@ -7,7 +7,7 @@ import { createHashedPassowrd } from "../modules/crypto/hash";
 let router = express.Router();
 
 /**
- * @api {get} /users Retrieves a list of all users
+ * @api {get} /users Retrieve a list of all users
  * @apiName GetUsers
  * @apiGroup User
  *

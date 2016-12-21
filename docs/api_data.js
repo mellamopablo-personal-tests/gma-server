@@ -1,10 +1,10 @@
 define({ "api": [
   {
     "type": "post",
-    "url": "/login",
-    "title": "Retrieves a session token",
+    "url": "/auth/login",
+    "title": "Retrieve a session token",
     "name": "Login",
-    "group": "Login",
+    "group": "Auth",
     "description": "<p>The login method is used to retrieve a session token by sending the user credentials. The session token is then sent as a header in subsequent requests that require authentication. The session token lasts for the amount of time defined in the configuration file, and the duration is refreshed on each authenticated request.</p> <p>Your application should be ready to handle a 401 Unauthorized request, result of the session token expiring, at any time. If that happens, use this method again.</p>",
     "parameter": {
       "fields": {
@@ -66,13 +66,13 @@ define({ "api": [
       ]
     },
     "version": "0.0.0",
-    "filename": "lib/routes/login.ts",
-    "groupTitle": "Login"
+    "filename": "lib/routes/auth.ts",
+    "groupTitle": "Auth"
   },
   {
     "type": "post",
     "url": "/messages",
-    "title": "Creates a new message",
+    "title": "Create a new message",
     "name": "CreateMessage",
     "group": "Messages",
     "header": {
@@ -113,6 +113,106 @@ define({ "api": [
         {
           "title": "HTTP 204 No Content",
           "content": "HTTP 204 No Content",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "lib/routes/messages.ts",
+    "groupTitle": "Messages"
+  },
+  {
+    "type": "get",
+    "url": "/messages/conversations/:userId",
+    "title": "Get a conversation",
+    "name": "GetConversation",
+    "group": "Messages",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "string",
+            "optional": false,
+            "field": "token",
+            "description": "<p>The current session token.</p>"
+          }
+        ]
+      }
+    },
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "number",
+            "optional": false,
+            "field": "userId",
+            "description": "<p>The user ID of the second user in the conversation.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "200": [
+          {
+            "group": "200",
+            "type": "Message[]",
+            "optional": false,
+            "field": "messages",
+            "description": "<p>An array containing every message that matches the request. Message is an object containing {number} id, {number} from, {number} to, and {string} content. From and to are user IDs.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "HTTP 200 OK",
+          "content": "HTTP 200 OK\n{\n\tmessages: [\n\t\t{\n\t\t\tid: 43,\n\t\t\tfrom: 34,\n\t\t\tto: 68,\n\t\t\tcontent: \"Hello!\"\n\t\t}, {\n\t\t\tid: 44,\n\t\t\tfrom: 34,\n\t\t\tto: 91,\n\t\t\tcontent: \"How are you?\"\n\t\t}\n\t]\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "lib/routes/messages.ts",
+    "groupTitle": "Messages"
+  },
+  {
+    "type": "get",
+    "url": "/messages",
+    "title": "Get all messages",
+    "name": "GetMessages",
+    "group": "Messages",
+    "description": "<p>Retrieves all messages: sent by the user, and sent to the user. Therefore, requires authentication.</p>",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "string",
+            "optional": false,
+            "field": "token",
+            "description": "<p>The current session token.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "200": [
+          {
+            "group": "200",
+            "type": "Message[]",
+            "optional": false,
+            "field": "messages",
+            "description": "<p>An array containing every message that matches the request. Message is an object containing {number} id, {number} from, {number} to, and {string} content. From and to are user IDs.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "HTTP 200 OK",
+          "content": "HTTP 200 OK\n{\n\tmessages: [\n\t\t{\n\t\t\tid: 43,\n\t\t\tfrom: 34,\n\t\t\tto: 68,\n\t\t\tcontent: \"Hello!\"\n\t\t}, {\n\t\t\tid: 44,\n\t\t\tfrom: 34,\n\t\t\tto: 91,\n\t\t\tcontent: \"How are you?\"\n\t\t}\n\t]\n}",
           "type": "json"
         }
       ]
@@ -279,7 +379,7 @@ define({ "api": [
   {
     "type": "get",
     "url": "/users",
-    "title": "Retrieves a list of all users",
+    "title": "Retrieve a list of all users",
     "name": "GetUsers",
     "group": "User",
     "success": {
