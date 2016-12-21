@@ -21,7 +21,7 @@ interface User {
 	password?: HashedPassword;
 }
 
-const users = {
+export const users = {
 	RELEVANT_INFO: ["id", "username", "password"],
 
 	/**
@@ -91,11 +91,14 @@ const users = {
 		});
 	},
 
-	add: function (username: string, password: HashedPassword): Promise<number> {
+	add: function (
+		username: string, password: HashedPassword, publicKey: Buffer
+	): Promise<number> {
 		return new Promise((fulfill, reject) => {
 			db("users").insert({
 				username: username,
-				password: password
+				password: password,
+				public_key: publicKey
 			}).returning("id").then(rows => {
 				return fulfill(rows[0]);
 			}).catch(reject);
@@ -115,7 +118,7 @@ interface MessageQueryOptions {
 	to?: User
 }
 
-const messages = {
+export const messages = {
 	add: function(to: User, from: User, content: string): Promise<{}> {
 		return new Promise((fulfill, reject) => {
 			db("messages").insert({
@@ -150,7 +153,7 @@ const messages = {
 	}
 };
 
-const sessions = {
+export const sessions = {
 	/**
 	 * Creates a new session token and stores it to the database.
 	 *
@@ -187,4 +190,23 @@ const sessions = {
 	}
 };
 
-export { users, messages, sessions };
+export const config = {
+	diffieHellman: {
+		getConfig: function() {
+			return new Promise((fulfill, reject) => {
+				db("config").select(["dhprime", "dhgenerator"]).then(rows => {
+					fulfill(rows[0] ? rows[0] : null);
+				}).catch(reject);
+			});
+		},
+
+		setConfig: function (prime: Buffer, generator: Buffer) {
+			return new Promise((fulfill, reject) => {
+				db("config").update({
+					dhprime: prime,
+					dhgenerator: generator
+				}).then(fulfill).reject();
+			});
+		}
+	}
+};

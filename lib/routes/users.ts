@@ -2,7 +2,7 @@
 import * as express from "express";
 
 import { users as db } from "../modules/db/index";
-import { createHashedPassowrd } from "../modules/crypto/hash";
+import { createHashedPassowrd, genKeyPair } from "../modules/crypto/index";
 
 let router = express.Router();
 
@@ -69,10 +69,19 @@ router.post("/", (req, res) => {
 	if (req.body.username && req.body.password) {
 		db.getByUsername(req.body.username).then(user => {
 			if (user === null) {
-				db.add(req.body.username, createHashedPassowrd(req.body.password)).then(id => {
-					res.status(201).send(JSON.stringify({
-						id: id
-					}));
+				genKeyPair().then(pair => {
+					db.add(
+						req.body.username,
+						createHashedPassowrd(req.body.password),
+						pair.publicKey
+					).then(id => {
+						res.status(201).send(JSON.stringify({
+							id: id
+						}));
+					}).catch(err => {
+						console.error(err);
+						res.status(500).send("");
+					});
 				}).catch(err => {
 					console.error(err);
 					res.status(500).send("");
