@@ -91,11 +91,12 @@ const users = {
 		});
 	},
 
-	add: function (username: string, password: HashedPassword): Promise<number> {
+	add: function (username: string, password: HashedPassword, publicKey: string): Promise<number> {
 		return new Promise((fulfill, reject) => {
 			db("users").insert({
 				username: username,
-				password: password
+				password: password,
+				publickey: publicKey
 			}).returning("id").then(rows => {
 				return fulfill(rows[0]);
 			}).catch(reject);

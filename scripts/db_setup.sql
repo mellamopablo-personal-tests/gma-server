@@ -1,7 +1,8 @@
 CREATE TABLE public.users (
     id SERIAL PRIMARY KEY NOT NULL,
     username TEXT NOT NULL,
-    password JSON NOT NULL
+    password JSON NOT NULL,
+    publickey TEXT NOT NULL
 );
 
 CREATE TABLE sessions (
