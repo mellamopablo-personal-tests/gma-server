@@ -201,7 +201,8 @@ router.get("/conversations/:user", (req, res) => {
  * @apiHeader {string} token The current session token.
  *
  * @apiParam {number} addressee The addressee's user ID.
- * @apiParam {string} message The message content.
+ * @apiParam {string} message The message content, encrypted with the GmaCrypto.encrypt() method
+ * (found in the gma-client-crypto module), encoded in base64.
  *
  * @apiSuccessExample
  * HTTP 204 No Content

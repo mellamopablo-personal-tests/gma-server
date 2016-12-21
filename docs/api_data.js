@@ -1,5 +1,16 @@
 define({ "api": [
   {
+    "type": "get",
+    "url": "/auth/prime",
+    "title": "Retrieve the Diffie Hellman prime",
+    "name": "GetPrime",
+    "group": "Auth",
+    "description": "<p>Retrieves the prime needed for the Diffie Hellman key exchange. This is handled by the gma-client-crypto module.</p>",
+    "version": "0.0.0",
+    "filename": "lib/routes/auth.ts",
+    "groupTitle": "Auth"
+  },
+  {
     "type": "post",
     "url": "/auth/login",
     "title": "Retrieve a session token",
@@ -329,6 +340,13 @@ define({ "api": [
             "optional": false,
             "field": "password",
             "description": "<p>The users's password, which will be used to authenticate.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "publicKey",
+            "description": "<p>The user's Diffie Hellman public key. The module gma-client-crypto takes care of that.</p>"
           }
         ]
       }

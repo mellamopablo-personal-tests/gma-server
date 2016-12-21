@@ -1,10 +1,31 @@
 /// <reference path="../../typings/index.d.ts" />
 import * as express from "express";
 
-import { users, sessions } from "../modules/db/index";
+import { users, sessions, config } from "../modules/db/index";
 import { verifyPassword } from "../modules/crypto/hash";
 
 let router = express.Router();
+
+/**
+ * @api {get} /auth/prime Retrieve the Diffie Hellman prime
+ *
+ * @apiName GetPrime
+ * @apiGroup Auth
+ *
+ * @apiDescription
+ * Retrieves the prime needed for the Diffie Hellman key exchange. This is handled by the
+ * gma-client-crypto module.
+ */
+router.get("/prime", (req, res) => {
+	config.diffieHellman.getPrime().then(prime => {
+		res.status(200).send(JSON.stringify({
+			prime: prime
+		}));
+	}).catch(err => {
+		console.error(err);
+		res.status(500).send("");
+	});
+});
 
 /**
  * @api {post} /auth/login Retrieve a session token

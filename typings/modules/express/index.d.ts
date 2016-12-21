@@ -465,7 +465,7 @@ namespace req {
         acceptsCharsets(charset?: string | string[]): string | boolean;
 
         /**
-         * Returns the first accepted encoding of the specified encodings,
+         * Returns the first accepted ENCODING of the specified encodings,
          * based on the request’s Accept-Encoding HTTP header field.
          * If none of the specified encodings is accepted, returns false.
          *

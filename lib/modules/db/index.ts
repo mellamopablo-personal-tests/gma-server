@@ -19,6 +19,7 @@ interface User {
 	id: number;
 	name: string;
 	password?: HashedPassword;
+	publicKey?: Buffer;
 }
 
 export const users = {
@@ -91,11 +92,22 @@ export const users = {
 		});
 	},
 
-	add: function (username: string, password: HashedPassword): Promise<number> {
+	getPublicKeyById: function (id: number): Promise<Buffer|null> {
+		return new Promise((fulfill, reject) => {
+			db("users").select("public_key").where({
+				id: id
+			}).then(rows => {
+				fulfill(rows[0] ? rows[0].public_key : null);
+			}).catch(reject);
+		});
+	},
+
+	add: function (username: string, password: HashedPassword, publicKey: Buffer): Promise<number> {
 		return new Promise((fulfill, reject) => {
 			db("users").insert({
 				username: username,
-				password: password
+				password: password,
+				public_key: publicKey
 			}).returning("id").then(rows => {
 				return fulfill(rows[0]);
 			}).catch(reject);
@@ -184,5 +196,29 @@ export const sessions = {
 				fulfill(rows.length > 0 ? rows[0].userid : null);
 			}).catch(reject);
 		});
+	}
+};
+
+export const config = {
+	diffieHellman: {
+		/**
+		 * Retrieves the prime from the database. Returns it as a Buffer, or null if not found.
+		 * @returns {Promise<Buffer>|Promise}
+		 */
+		getPrime: function(): Promise<Buffer|null> {
+			return new Promise((fulfill, reject) => {
+				db("config").select("dh_prime").then(rows => {
+					fulfill(rows[0] ? rows[0].dh_prime : null);
+				}).catch(reject);
+			});
+		},
+
+		addPrime(prime: Buffer) {
+			return new Promise((fulfill, reject) => {
+				db("config").insert({
+					dh_prime: prime.toString("base64")
+				}).then(fulfill).catch(reject);
+			});
+		}
 	}
 };

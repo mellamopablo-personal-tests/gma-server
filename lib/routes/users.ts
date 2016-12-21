@@ -3,6 +3,7 @@ import * as express from "express";
 
 import { users as db } from "../modules/db/index";
 import { createHashedPassowrd } from "../modules/crypto/hash";
+import { encoding as ENCODING } from "../../config.js";
 
 let router = express.Router();
 
@@ -42,6 +43,27 @@ router.get("/", (req, res) => {
 	});
 });
 
+router.get("/:id/publicKey", (req, res) => {
+	db.getPublicKeyById(req.params.id).then(pKey => {
+		if (pKey !== null) {
+			res.status(200).send(JSON.stringify({
+				id: req.params.id,
+				publicKey: pKey.toString(ENCODING)
+			}));
+		} else {
+			res.status(422).send(JSON.stringify({
+				error: {
+					code: "USER_DOESNT_EXIST",
+					message: `The user with id ${req.params.id} doesn't exist`
+				}
+			}));
+		}
+	}).catch(err => {
+		console.error(err);
+		res.status(500).send("");
+	});
+});
+
 /**
  * @api {post} /users Create a new user
  * @apiName CreateUser
@@ -49,6 +71,8 @@ router.get("/", (req, res) => {
  *
  * @apiParam {String} username The users's username, which will be used to authenticate.
  * @apiParam {String} password The users's password, which will be used to authenticate.
+ * @apiParam {String} publicKey The user's Diffie Hellman public key. The module
+ * gma-client-crypto takes care of that.
  *
  * @apiSuccess (201) {number} id The id of the created users.
  * @apiSuccessExample
@@ -66,10 +90,14 @@ router.get("/", (req, res) => {
  * 	}
  */
 router.post("/", (req, res) => {
-	if (req.body.username && req.body.password) {
+	if (req.body.username && req.body.password && req.body.publicKey) {
 		db.getByUsername(req.body.username).then(user => {
 			if (user === null) {
-				db.add(req.body.username, createHashedPassowrd(req.body.password)).then(id => {
+				db.add(
+					req.body.username,
+					createHashedPassowrd(req.body.password),
+					new Buffer(req.body.publicKey, ENCODING)
+				).then(id => {
 					res.status(201).send(JSON.stringify({
 						id: id
 					}));
@@ -94,7 +122,8 @@ router.post("/", (req, res) => {
 		res.status(400).send(JSON.stringify({
 			error: {
 				code: "BAD_REQUEST",
-				message: "Either the username or the password, or both, are missing."
+				message: "Make sure that you have supplied the username, the password, and the" +
+				" public key"
 			}
 		}));
 	}
