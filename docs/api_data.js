@@ -114,7 +114,7 @@ define({ "api": [
             "type": "string",
             "optional": false,
             "field": "message",
-            "description": "<p>The message content.</p>"
+            "description": "<p>The message content, encrypted with the GmaCrypto.encrypt() method (found in the gma-client-crypto module), encoded in base64.</p>"
           }
         ]
       }

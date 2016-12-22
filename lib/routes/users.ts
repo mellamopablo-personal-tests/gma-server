@@ -44,24 +44,33 @@ router.get("/", (req, res) => {
 });
 
 router.get("/:id/publicKey", (req, res) => {
-	db.getPublicKeyById(req.params.id).then(pKey => {
-		if (pKey !== null) {
-			res.status(200).send(JSON.stringify({
-				id: req.params.id,
-				publicKey: pKey.toString(ENCODING)
-			}));
-		} else {
-			res.status(422).send(JSON.stringify({
-				error: {
-					code: "USER_DOESNT_EXIST",
-					message: `The user with id ${req.params.id} doesn't exist`
-				}
-			}));
-		}
-	}).catch(err => {
-		console.error(err);
-		res.status(500).send("");
-	});
+	if (req.params.id) {
+		db.getPublicKeyById(req.params.id).then(pKey => {
+			if (pKey !== null) {
+				res.status(200).send(JSON.stringify({
+					id: req.params.id,
+					publicKey: pKey.toString(ENCODING)
+				}));
+			} else {
+				res.status(422).send(JSON.stringify({
+					error: {
+						code: "USER_DOESNT_EXIST",
+						message: `The user with id ${req.params.id} doesn't exist`
+					}
+				}));
+			}
+		}).catch(err => {
+			console.error(err);
+			res.status(500).send("");
+		});
+	} else {
+		res.status(400).send(JSON.stringify({
+			error: {
+				code: "BAD_REQUEST",
+				message: "Make sure that you have supplied the user ID"
+			}
+		}));
+	}
 });
 
 /**

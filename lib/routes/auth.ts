@@ -6,6 +6,7 @@ import { verifyPassword } from "../modules/crypto/hash";
 
 let router = express.Router();
 
+// TODO same prime for everyone is not a good idea
 /**
  * @api {get} /auth/prime Retrieve the Diffie Hellman prime
  *
