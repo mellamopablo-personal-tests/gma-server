@@ -1,7 +1,12 @@
+CREATE TABLE public.config (
+	dh_prime BYTEA DEFAULT NULL
+);
+
 CREATE TABLE public.users (
     id SERIAL PRIMARY KEY NOT NULL,
     username TEXT NOT NULL,
-    password JSON NOT NULL
+    password JSON NOT NULL,
+    public_key BYTEA NOT NULL
 );
 
 CREATE TABLE public.sessions (

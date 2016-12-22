@@ -5,9 +5,12 @@ import * as morgan from "morgan";
 
 import { api } from "./routes/index";
 import { authenticate } from "./auth";
+import { checkPrime } from "./modules/crypto/diffieHellman";
 
 let app = express();
 let port = +process.env.GMA_PORT || +process.argv[2] || +process.env.PORT || 3000;
+
+checkPrime().catch(console.error);
 
 //noinspection TypeScriptValidateTypes
 app.use(morgan("combined"));

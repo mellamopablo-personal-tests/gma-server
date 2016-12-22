@@ -4,5 +4,6 @@ module.exports = {
 		user: "pablo",
 		database: "gma",
 		password: "1234abcd"
-	}
+	},
+	encoding: "base64"
 };

@@ -102,7 +102,7 @@ declare var Buffer: {
      * Allocates a new buffer containing the given {str}.
      *
      * @param str String to store in buffer.
-     * @param encoding encoding to use, optional.  Default is 'utf8'
+     * @param encoding ENCODING to use, optional.  Default is 'utf8'
      */
     new (str: string, encoding?: string): Buffer;
     /**
@@ -163,8 +163,8 @@ declare var Buffer: {
     from(buffer: Buffer): Buffer;
     /**
      * Creates a new Buffer containing the given JavaScript string {str}.
-     * If provided, the {encoding} parameter identifies the character encoding.
-     * If not provided, {encoding} defaults to 'utf8'.
+     * If provided, the {ENCODING} parameter identifies the character ENCODING.
+     * If not provided, {ENCODING} defaults to 'utf8'.
      *
      * @param str
      */
@@ -176,18 +176,18 @@ declare var Buffer: {
      */
     isBuffer(obj: any): obj is Buffer;
     /**
-     * Returns true if {encoding} is a valid encoding argument.
+     * Returns true if {ENCODING} is a valid ENCODING argument.
      * Valid string encodings in Node 0.12: 'ascii'|'utf8'|'utf16le'|'ucs2'(alias of 'utf16le')|'base64'|'binary'(deprecated)|'hex'
      *
      * @param encoding string to test.
      */
     isEncoding(encoding: string): boolean;
     /**
-     * Gives the actual byte length of a string. encoding defaults to 'utf8'.
+     * Gives the actual byte length of a string. ENCODING defaults to 'utf8'.
      * This is not the same as String.prototype.length since that returns the number of characters in a string.
      *
      * @param string string to test.
-     * @param encoding encoding used to evaluate (defaults to 'utf8')
+     * @param encoding ENCODING used to evaluate (defaults to 'utf8')
      */
     byteLength(string: string, encoding?: string): number;
     /**
@@ -212,7 +212,7 @@ declare var Buffer: {
      * @param size count of octets to allocate.
      * @param fill if specified, buffer will be initialized by calling buf.fill(fill).
      *    If parameter is omitted, buffer will be filled with zeros.
-     * @param encoding encoding used for call to buf.fill while initalizing
+     * @param encoding ENCODING used for call to buf.fill while initalizing
      */
     alloc(size: number, fill?: string | Buffer | number, encoding?: string): Buffer;
     /**
@@ -1618,7 +1618,7 @@ declare module "child_process" {
     }
     export function exec(command: string, callback?: (error: Error, stdout: string, stderr: string) => void): ChildProcess;
     export function exec(command: string, options: ExecOptionsWithStringEncoding, callback?: (error: Error, stdout: string, stderr: string) => void): ChildProcess;
-    // usage. child_process.exec("tsc", {encoding: null as string}, (err, stdout, stderr) => {});
+    // usage. child_process.exec("tsc", {ENCODING: null as string}, (err, stdout, stderr) => {});
     export function exec(command: string, options: ExecOptionsWithBufferEncoding, callback?: (error: Error, stdout: Buffer, stderr: Buffer) => void): ChildProcess;
     export function exec(command: string, options: ExecOptions, callback?: (error: Error, stdout: string, stderr: string) => void): ChildProcess;
 
@@ -1639,12 +1639,12 @@ declare module "child_process" {
     }
     export function execFile(file: string, callback?: (error: Error, stdout: string, stderr: string) => void): ChildProcess;
     export function execFile(file: string, options?: ExecFileOptionsWithStringEncoding, callback?: (error: Error, stdout: string, stderr: string) => void): ChildProcess;
-    // usage. child_process.execFile("file.sh", {encoding: null as string}, (err, stdout, stderr) => {});
+    // usage. child_process.execFile("file.sh", {ENCODING: null as string}, (err, stdout, stderr) => {});
     export function execFile(file: string, options?: ExecFileOptionsWithBufferEncoding, callback?: (error: Error, stdout: Buffer, stderr: Buffer) => void): ChildProcess;
     export function execFile(file: string, options?: ExecFileOptions, callback?: (error: Error, stdout: string, stderr: string) => void): ChildProcess;
     export function execFile(file: string, args?: string[], callback?: (error: Error, stdout: string, stderr: string) => void): ChildProcess;
     export function execFile(file: string, args?: string[], options?: ExecFileOptionsWithStringEncoding, callback?: (error: Error, stdout: string, stderr: string) => void): ChildProcess;
-    // usage. child_process.execFile("file.sh", ["foo"], {encoding: null as string}, (err, stdout, stderr) => {});
+    // usage. child_process.execFile("file.sh", ["foo"], {ENCODING: null as string}, (err, stdout, stderr) => {});
     export function execFile(file: string, args?: string[], options?: ExecFileOptionsWithBufferEncoding, callback?: (error: Error, stdout: Buffer, stderr: Buffer) => void): ChildProcess;
     export function execFile(file: string, args?: string[], options?: ExecFileOptions, callback?: (error: Error, stdout: string, stderr: string) => void): ChildProcess;
 
@@ -2386,7 +2386,7 @@ declare module "fs" {
      * Asynchronous readFile - Asynchronously reads the entire contents of a file.
      *
      * @param fileName
-     * @param encoding
+     * @param ENCODING
      * @param callback - The callback is passed two arguments (err, data), where data is the contents of the file.
      */
     export function readFile(filename: string, encoding: string, callback: (err: NodeJS.ErrnoException, data: string) => void): void;
@@ -2394,7 +2394,7 @@ declare module "fs" {
      * Asynchronous readFile - Asynchronously reads the entire contents of a file.
      *
      * @param fileName
-     * @param options An object with optional {encoding} and {flag} properties.  If {encoding} is specified, readFile returns a string; otherwise it returns a Buffer.
+     * @param options An object with optional {ENCODING} and {flag} properties.  If {ENCODING} is specified, readFile returns a string; otherwise it returns a Buffer.
      * @param callback - The callback is passed two arguments (err, data), where data is the contents of the file.
      */
     export function readFile(filename: string, options: { encoding: string; flag?: string; }, callback: (err: NodeJS.ErrnoException, data: string) => void): void;
@@ -2402,7 +2402,7 @@ declare module "fs" {
      * Asynchronous readFile - Asynchronously reads the entire contents of a file.
      *
      * @param fileName
-     * @param options An object with optional {encoding} and {flag} properties.  If {encoding} is specified, readFile returns a string; otherwise it returns a Buffer.
+     * @param options An object with optional {ENCODING} and {flag} properties.  If {ENCODING} is specified, readFile returns a string; otherwise it returns a Buffer.
      * @param callback - The callback is passed two arguments (err, data), where data is the contents of the file.
      */
     export function readFile(filename: string, options: { flag?: string; }, callback: (err: NodeJS.ErrnoException, data: Buffer) => void): void;
@@ -2417,21 +2417,21 @@ declare module "fs" {
      * Synchronous readFile - Synchronously reads the entire contents of a file.
      *
      * @param fileName
-     * @param encoding
+     * @param ENCODING
      */
     export function readFileSync(filename: string, encoding: string): string;
     /*
      * Synchronous readFile - Synchronously reads the entire contents of a file.
      *
      * @param fileName
-     * @param options An object with optional {encoding} and {flag} properties.  If {encoding} is specified, readFileSync returns a string; otherwise it returns a Buffer.
+     * @param options An object with optional {ENCODING} and {flag} properties.  If {ENCODING} is specified, readFileSync returns a string; otherwise it returns a Buffer.
      */
     export function readFileSync(filename: string, options: { encoding: string; flag?: string; }): string;
     /*
      * Synchronous readFile - Synchronously reads the entire contents of a file.
      *
      * @param fileName
-     * @param options An object with optional {encoding} and {flag} properties.  If {encoding} is specified, readFileSync returns a string; otherwise it returns a Buffer.
+     * @param options An object with optional {ENCODING} and {flag} properties.  If {ENCODING} is specified, readFileSync returns a string; otherwise it returns a Buffer.
      */
     export function readFileSync(filename: string, options?: { flag?: string; }): Buffer;
     export function writeFile(filename: string, data: any, callback?: (err: NodeJS.ErrnoException) => void): void;
