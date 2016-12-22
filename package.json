@@ -17,6 +17,20 @@
     "typescript": "^2.1.4"
   },
   "devDependencies": {},
-  "author": "",
-  "license": "Apache-2.0"
+  "author": "Pablo Rodríguez <pabloviolin8@gmail.com>",
+  "license": "Apache-2.0",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "build": "gulp"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mellamopablo-personal-tests/gma-server.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mellamopablo-personal-tests/gma-server/issues"
+  },
+  "homepage": "https://github.com/mellamopablo-personal-tests/gma-server#readme"
 }
