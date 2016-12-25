@@ -28,4 +28,4 @@ $ pm2 start ./server/index.js
 
 ## API Reference
 
-Check out the api reference here. (link pending)
+Check out the api reference [here](https://mellamopablo-personal-tests.github.io/gma-server/).
