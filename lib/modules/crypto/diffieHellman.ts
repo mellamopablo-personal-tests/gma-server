@@ -1,8 +1,7 @@
 import { createDiffieHellman } from "crypto";
 
 import { config as db } from "../db/index";
-
-const PRIME_LENGTH = 2048;
+import { dh_prime_length as PRIME_LENGTH } from "../../../config.js";
 
 function generatePrime(): Buffer {
 	const dh = createDiffieHellman(PRIME_LENGTH);

@@ -14,6 +14,7 @@ CREATE TABLE public.sessions (
     ip TEXT NOT NULL,
     userid INTEGER NOT NULL,
     time INTEGER NOT NULL,
+    extended BOOLEAN DEFAULT false NOT NULL,
     CONSTRAINT sessions_users_id_fk FOREIGN KEY (userid) REFERENCES users (id)
 );
 

@@ -1,12 +1,12 @@
 /// <reference path="../../typings/index.d.ts" />
 import * as express from "express";
 
+import * as cfg from "../../config.js";
 import { users, sessions, config } from "../modules/db/index";
 import { verifyPassword } from "../modules/crypto/hash";
 
 let router = express.Router();
 
-// TODO same prime for everyone is not a good idea
 /**
  * @api {get} /auth/prime Retrieve the Diffie Hellman prime
  *
@@ -20,7 +20,7 @@ let router = express.Router();
 router.get("/prime", (req, res) => {
 	config.diffieHellman.getPrime().then(prime => {
 		res.status(200).send(JSON.stringify({
-			prime: prime
+			prime: prime.toString(cfg.encoding)
 		}));
 	}).catch(err => {
 		console.error(err);
@@ -39,11 +39,21 @@ router.get("/prime", (req, res) => {
  * The session token lasts for the amount of time defined in the configuration file, and the
  * duration is refreshed on each authenticated request.
  *
+ * Whenever you authenticate by sending the token, the server responds with the
+ * "Session-Valid-Until" header, which contains a timestamp of the time when the session will
+ * expire.
+ *
  * Your application should be ready to handle a 401 Unauthorized request, result of the session
- * token expiring, at any time. If that happens, use this method again.
+ * token expiring, at any time. If that happens, call this method again.
+ *
+ * A session can be manually terminated by calling the {post} /auth/logout method.
  *
  * @apiParam {String} username The users's username.
  * @apiParam {String} password The users's password.
+ * @apiParam {boolean} [extended=false]
+ * Whether or not the session is meant to be extended. Extended sessions last longer than
+ * regular sessions (their duration is also defined in the config file), and are intended to be
+ * explicitly requested by the user (for example, by checking a "remember me" checkbox).
  *
  * @apiSuccess (200) {String} token
  * The token to be used to authenticate on the rest of the api methods.
@@ -64,30 +74,38 @@ router.get("/prime", (req, res) => {
  */
 router.post("/login", (req, res) => {
 	if (req.body.username && req.body.password) {
+
 		users.getByUsername(req.body.username).then(user => {
 			if (user !== null && verifyPassword(req.body.password, user.password)) {
-				sessions.add(user, req.connection.remoteAddress).then(token => {
+
+				let extended = req.body.extended || false;
+				sessions.add(user, req.connection.remoteAddress, extended).then(r => {
+					res.setHeader("Session-Valid-Until", r.expiration_time.toString());
 					res.status(200).send(JSON.stringify({
-						token: token
-						// TODO maybe add valid until
+						token: r.token
 					}));
 				}).catch(err => {
 					console.error(err);
 					res.status(500).send("");
 				});
+
 			} else {
+
 				res.status(401).send(JSON.stringify({
 					error: {
 						code: "WRONG_USERNAME_OR_PASSWORD",
 						message: "The entered username or password are incorrect."
 					}
 				}));
+
 			}
 		}).catch(err => {
 			console.error(err);
 			res.status(500).send("");
 		});
+
 	} else {
+
 		res.status(400).send(JSON.stringify({
 			error: {
 				code: "BAD_REQUEST",
@@ -95,6 +113,36 @@ router.post("/login", (req, res) => {
 				" request body."
 			}
 		}));
+
+	}
+});
+
+/**
+ * @api {post} /auth/logout Terminate a session
+ * @apiName LogOut
+ * @apiGroup Auth
+ *
+ * @apiHeader {string} token The current session token.
+ *
+ * @apiSuccessExample
+ * HTTP 204 No Content
+ */
+router.post("/logout", (req, res) => {
+	if (req.authenticated) {
+
+		sessions.deleteToken(req.headers.token, req.connection.remoteAddress).then(() => {
+
+			res.removeHeader("Session-Valid-Until");
+			res.status(204).send("");
+
+		}).catch(err => {
+			console.error(err);
+			res.status(500).send("");
+		});
+
+
+	} else {
+		res.status(401).send("");
 	}
 });
 

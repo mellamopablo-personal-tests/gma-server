@@ -863,7 +863,6 @@ declare module "cluster" {
         fork(env?: any): Worker;
         isMaster: boolean;
         isWorker: boolean;
-        // TODO: cluster.schedulingPolicy
         settings: ClusterSettings;
         setupMaster(settings?: ClusterSetupMasterSettings): void;
         worker: Worker;
@@ -941,7 +940,6 @@ declare module "cluster" {
     export function fork(env?: any): Worker;
     export var isMaster: boolean;
     export var isWorker: boolean;
-    // TODO: cluster.schedulingPolicy
     export var settings: ClusterSettings;
     export function setupMaster(settings?: ClusterSetupMasterSettings): void;
     export var worker: Worker;

@@ -12,11 +12,43 @@
   },
   {
     "type": "post",
+    "url": "/auth/logout",
+    "title": "Terminate a session",
+    "name": "LogOut",
+    "group": "Auth",
+    "header": {
+      "fields": {
+        "Header": [
+          {
+            "group": "Header",
+            "type": "string",
+            "optional": false,
+            "field": "token",
+            "description": "<p>The current session token.</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "examples": [
+        {
+          "title": "HTTP 204 No Content",
+          "content": "HTTP 204 No Content",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "lib/routes/auth.ts",
+    "groupTitle": "Auth"
+  },
+  {
+    "type": "post",
     "url": "/auth/login",
     "title": "Retrieve a session token",
     "name": "Login",
     "group": "Auth",
-    "description": "<p>The login method is used to retrieve a session token by sending the user credentials. The session token is then sent as a header in subsequent requests that require authentication. The session token lasts for the amount of time defined in the configuration file, and the duration is refreshed on each authenticated request.</p> <p>Your application should be ready to handle a 401 Unauthorized request, result of the session token expiring, at any time. If that happens, use this method again.</p>",
+    "description": "<p>The login method is used to retrieve a session token by sending the user credentials. The session token is then sent as a header in subsequent requests that require authentication. The session token lasts for the amount of time defined in the configuration file, and the duration is refreshed on each authenticated request.</p> <p>Whenever you authenticate by sending the token, the server responds with the &quot;Session-Valid-Until&quot; header, which contains a timestamp of the time when the session will expire.</p> <p>Your application should be ready to handle a 401 Unauthorized request, result of the session token expiring, at any time. If that happens, call this method again.</p> <p>A session can be manually terminated by calling the {post} /auth/logout method.</p>",
     "parameter": {
       "fields": {
         "Parameter": [
@@ -33,6 +65,14 @@
             "optional": false,
             "field": "password",
             "description": "<p>The users's password.</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "boolean",
+            "optional": true,
+            "field": "extended",
+            "defaultValue": "false",
+            "description": "<p>Whether or not the session is meant to be extended. Extended sessions last longer than regular sessions (their duration is also defined in the config file), and are intended to be explicitly requested by the user (for example, by checking a &quot;remember me&quot; checkbox).</p>"
           }
         ]
       }

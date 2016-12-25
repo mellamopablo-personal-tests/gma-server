@@ -538,10 +538,16 @@ namespace req {
         is(type: string | string[]): boolean;
 
         // CUSTOM
-		body;
+		body: RequestBody;
 		authenticated: boolean;
 		userId?: number;
     }
+}
+
+interface RequestBody {
+	username?: string
+	password?: string
+	extended?: boolean
 }
 
 const req: req.Request;
@@ -1696,7 +1702,6 @@ namespace createApplication {
         /** The serve-static middleware */
         static: typeof serveStatic;
 
-        // TODO query
     }
 }
 

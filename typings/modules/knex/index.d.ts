@@ -298,7 +298,6 @@ namespace Knex {
         or: QueryBuilder;
         and: QueryBuilder;
 
-        //TODO: Promise?
         columnInfo(column?: string): Promise<ColumnInfo>;
 
         forUpdate(): QueryBuilder;
