@@ -10,7 +10,7 @@ You'll need Postgres and Node. To set up your database, execute the `scripts/db_
 $ git clone https://github.com/mellamopablo-personal-tests/gma-server.git
 $ cd gma-server
 $ npm install
-$ npm build
+$ npm run build
 
 Set up your postgres database credentials, and adjust the configuration to your liking:
 
