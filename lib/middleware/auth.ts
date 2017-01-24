@@ -1,7 +1,9 @@
-/// <reference path="../typings/index.d.ts" />
-import { sessions as db } from "./modules/db/index";
+/// <reference path="../../typings/index.d.ts" />
+import { sessions as db } from "../modules/db/index";
 
 export function authenticate(req, res, next) {
+	res.setHeader("Access-Control-Allow-Origin", "*");
+
 	if (req.headers.token) {
 		db.validate(req.headers.token, req.connection.remoteAddress).then(userId => {
 			if (userId !== null) {

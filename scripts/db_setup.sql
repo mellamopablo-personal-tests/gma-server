@@ -1,5 +1,7 @@
 CREATE TABLE public.config (
-	dh_prime BYTEA DEFAULT NULL
+	dh_prime BYTEA DEFAULT NULL,
+	server_private_key TEXT DEFAULT NULL NULL,
+	server_cert TEXT DEFAULT NULL NULL;
 );
 
 CREATE TABLE public.users (

@@ -260,6 +260,11 @@ export const sessions = {
 	}
 };
 
+interface Certs {
+	cert: string,
+	privateKey: string
+}
+
 export const config = {
 	diffieHellman: {
 		/**
@@ -279,6 +284,20 @@ export const config = {
 				db("config").insert({
 					dh_prime: prime.toString("base64")
 				}).then(fulfill).catch(reject);
+			});
+		}
+	},
+
+	certs: {
+		get: function(): Promise<Certs|null> {
+			return new Promise((fulfill, reject) => {
+				db("config").select(["server_private_key", "server_cert"]).then(rows => {
+					//noinspection TypeScriptUnresolvedVariable
+					fulfill(rows[0] ? {
+						cert: rows[0].server_cert,
+						privateKey: rows[0].server_private_key
+					} : null);
+				}).catch(reject);
 			});
 		}
 	}
